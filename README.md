@@ -1,1 +1,0 @@
-# BidSystem2.0

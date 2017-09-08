@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dao.bidMapper" >
+  <resultMap id="BaseResultMap" type="DO.bid" >
+    <constructor >
+      <idArg column="bidId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="landlordId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="result" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="price" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="roomId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="orderId" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="score" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="facility" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="arroundsite" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="roomtype" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    bidId, landlordId, result, price, roomId, orderId, score, facility, arroundsite, 
+    roomtype
+  </sql>
+  <select id="selectAllBid" resultType="DO.bid" >
+    select
+    <include refid="Base_Column_List" />
+    from bid
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from bid
+    where bidId = #{bidid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from bid
+    where bidId = #{bidid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="DO.bid" >
+    insert into bid (bidId, landlordId, result, 
+      price, roomId, orderId, 
+      score, facility, arroundsite, 
+      roomtype)
+    values (#{bidid,jdbcType=INTEGER}, #{landlordid,jdbcType=INTEGER}, #{result,jdbcType=INTEGER}, 
+      #{price,jdbcType=INTEGER}, #{roomid,jdbcType=INTEGER}, #{orderid,jdbcType=VARCHAR}, 
+      #{score,jdbcType=VARCHAR}, #{facility,jdbcType=VARCHAR}, #{arroundsite,jdbcType=VARCHAR},
+      #{roomtype,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="DO.bid" >
+    insert into bid
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bidid != null" >
+        bidId,
+      </if>
+      <if test="landlordid != null" >
+        landlordId,
+      </if>
+      <if test="result != null" >
+        result,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="roomid != null" >
+        roomId,
+      </if>
+      <if test="orderid != null" >
+        orderId,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="facility != null" >
+        facility,
+      </if>
+      <if test="arroundsite != null" >
+        arroundsite,
+      </if>
+      <if test="roomtype != null" >
+        roomtype,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bidid != null" >
+        #{bidid,jdbcType=INTEGER},
+      </if>
+      <if test="landlordid != null" >
+        #{landlordid,jdbcType=INTEGER},
+      </if>
+      <if test="result != null" >
+        #{result,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=INTEGER},
+      </if>
+      <if test="roomid != null" >
+        #{roomid,jdbcType=INTEGER},
+      </if>
+      <if test="orderid != null" >
+        #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="facility != null" >
+        #{facility,jdbcType=VARCHAR},
+      </if>
+      <if test="arroundsite != null" >
+        #{arroundsite,jdbcType=VARCHAR},
+      </if>
+      <if test="roomtype != null" >
+        #{roomtype,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="DO.bid" >
+    update bid
+    <set >
+      <if test="landlordid != null" >
+        landlordId = #{landlordid,jdbcType=INTEGER},
+      </if>
+      <if test="result != null" >
+        result = #{result,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=INTEGER},
+      </if>
+      <if test="roomid != null" >
+        roomId = #{roomid,jdbcType=INTEGER},
+      </if>
+      <if test="orderid != null" >
+        orderId = #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="facility != null" >
+        facility = #{facility,jdbcType=VARCHAR},
+      </if>
+      <if test="arroundsite != null" >
+        arroundsite = #{arroundsite,jdbcType=VARCHAR},
+      </if>
+      <if test="roomtype != null" >
+        roomtype = #{roomtype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where bidId = #{bidid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="DO.bid" >
+    update bid
+    set landlordId = #{landlordid,jdbcType=INTEGER},
+      result = #{result,jdbcType=INTEGER},
+      price = #{price,jdbcType=INTEGER},
+      roomId = #{roomid,jdbcType=INTEGER},
+      orderId = #{orderid,jdbcType=VARCHAR},
+      score = #{score,jdbcType=VARCHAR},
+      facility = #{facility,jdbcType=VARCHAR},
+      arroundsite = #{arroundsite,jdbcType=VARCHAR},
+      roomtype = #{roomtype,jdbcType=VARCHAR}
+    where bidId = #{bidid,jdbcType=INTEGER}
+  </update>
+</mapper>
