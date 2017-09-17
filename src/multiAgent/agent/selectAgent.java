@@ -10,6 +10,7 @@ import jade.core.Agent;
 import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
 import jade.wrapper.StaleProxyException;
+import multiAgent.agentHelper.FileUtil;
 import multiAgent.agentHelper.landlordCompare;
 import multiAgent.behavior.listener.selectListener;
 import multiAgent.ontology.Bid;
@@ -42,6 +43,7 @@ public class selectAgent extends Agent {
         getContentManager().registerLanguage(codec);
         getContentManager().registerOntology(ontology);
         System.out.println("创建 selectAgent");
+        FileUtil.append("创建 搜索Agent");
         DFUtil.registerService(this,"select");
         addBehaviour(new selectListener(this));
     }

@@ -20,6 +20,9 @@ public class tenantData {
     List consults;
     List goods;
 
+    ArrayList<bid> goodTrains;
+
+
     public int getNum() {
         return num;
     }
@@ -67,5 +70,15 @@ public class tenantData {
     public void setGoods(List goods) {
         this.goods = goods;
     }
+
+    public ArrayList<bid> getGoodTrains() {
+        return goodTrains;
+    }
+
+    public void setGoodTrains(ArrayList<bid> goodTrains) {
+        this.goodTrains = goodTrains;
+    }
+
+
 
 }

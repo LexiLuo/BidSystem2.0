@@ -28,6 +28,7 @@ public class tenant_context {
     private BufferedWriter writer = null;
     private File f = null;
     private tenantData data;
+
     public tenant_context(tenant t ,Agent g) {
         channelList = new ArrayList<channel>();
         this.t = t;
@@ -89,7 +90,6 @@ public class tenant_context {
                 f.createNewFile();
                 create = true;
             }
-            reader = new BufferedReader(new FileReader(f));
             writer = new BufferedWriter(new FileWriter(f,true));
             if(create){
                 goodLevel = 11.0;
@@ -107,6 +107,7 @@ public class tenant_context {
     }
     private void readGoodLevel(){
         try {
+            reader = new BufferedReader(new FileReader(f));
             String str = reader.readLine();
             String[] res = str.split("-");
             goodLevel = Double.parseDouble(res[0]);
@@ -126,5 +127,11 @@ public class tenant_context {
             e.printStackTrace();
         }
     }
+    public tenantData getData() {
+        return data;
+    }
 
+    public void setData(tenantData data) {
+        this.data = data;
+    }
 }

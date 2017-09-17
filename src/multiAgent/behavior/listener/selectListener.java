@@ -13,6 +13,7 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import multiAgent.agent.selectAgent;
+import multiAgent.agentHelper.FileUtil;
 import multiAgent.behavior.logical.selectAnalysis;
 import multiAgent.behavior.message.selectInform;
 import multiAgent.ontology.*;
@@ -48,6 +49,7 @@ public class selectListener extends CyclicBehaviour {
                     if (act.getAction() instanceof Order) {
                         Order o = (Order) act.getAction();
                         System.out.println("select"+myAgent.getName()+"收到筛选条件信息" + o.getAddress());
+                        FileUtil.append("筛选Agent"+myAgent.getName()+"收到筛选条件信息" + o.getAddress());
                         /**
                          * todo
                          * 下面是去查询并且筛选数据，然后生成招标书，并且发送给房东agent
@@ -80,8 +82,10 @@ public class selectListener extends CyclicBehaviour {
                         }
                         bid.setAroundsites(aroundsites);
                         System.out.println(bid.getLandlordId().getName() + " 同意竞标");
+                        FileUtil.append(bid.getLandlordId().getName() + " 同意竞标");
                     }else{
                         System.out.println(bid.getLandlordId().getName() +" 拒绝竞标");
+                        FileUtil.append(bid.getLandlordId().getName() +" 拒绝竞标");
                     }
                     boolean isAll = agent.isAllReply(bid.getId(),bid);
                     if(isAll){

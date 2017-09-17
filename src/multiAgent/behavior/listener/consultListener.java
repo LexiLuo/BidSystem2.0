@@ -10,6 +10,7 @@ import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import multiAgent.agentHelper.FileUtil;
 import multiAgent.behavior.message.consultQuery;
 import multiAgent.ontology.BidOntology;
 import multiAgent.ontology.Order;
@@ -39,6 +40,7 @@ public class consultListener extends CyclicBehaviour {
                     if (act.getAction() instanceof Order) {
                         Order o = (Order) act.getAction();
                         System.out.println("consult"+myAgent.getName()+ " "+ o.getCustomer() + "客户的订单");
+                        FileUtil.append("协商Agent"+myAgent.getName()+" "+ o.getCustomer() + "客户的订单");
                         //将数据传到筛选分析的Agent
                         consultQuery query = new consultQuery(myAgent,o);
                         myAgent.addBehaviour(query);

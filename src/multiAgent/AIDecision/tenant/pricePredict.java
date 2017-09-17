@@ -24,6 +24,8 @@ public class pricePredict extends channel {
         HashMap<AID,Integer> status = data.getStatus();
         ArrayList<bid> trainBids = data.getTrainBids();
         List goodBid = data.getGoods() == null ? new jade.util.leap.ArrayList() : data.getGoods();
+        ArrayList<bid> goodTrans = data.getGoodTrains() == null ? new ArrayList<bid>() : data.getGoodTrains();
+
         List resultBids = new jade.util.leap.ArrayList();
         for(int i = 0 ; i < bids.size() ; i++){
             Bid b = (Bid)bids.get(i);
@@ -33,6 +35,7 @@ public class pricePredict extends channel {
                 resultBids.add(b);
             }else if( type == 1){
                 goodBid.add(b);
+                goodTrans.add(bb);
                 goodScore = goodScore + Double.parseDouble(bb.getScore())/100;
                 num++;
             }
@@ -45,6 +48,7 @@ public class pricePredict extends channel {
         data.setGoodLevel(goodLevel);
         data.setNum(num);
         data.setGoods(goodBid);
+        data.setGoodTrains(goodTrans);
         data.setConsults(resultBids);
         return data;
     }

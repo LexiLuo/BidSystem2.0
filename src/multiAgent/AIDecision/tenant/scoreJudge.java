@@ -22,11 +22,14 @@ public class scoreJudge extends channel{
         for(int i = 0 ; i < trainBids.size() ; i++) {
             bid b = trainBids.get(i);
             Bid bb = (Bid)bids.get(i);
-            if (goodLevel*100 < Double.parseDouble(b.getScore())){
-                status.put(bb.getLandlordId(),1);
-            }else{
-                status.put(bb.getLandlordId(),0);
+            if(!status.containsKey(bb.getLandlordId())) {
+                if (goodLevel * 100 < Double.parseDouble(b.getScore())) {
+                    status.put(bb.getLandlordId(), 1);
+                } else {
+                    status.put(bb.getLandlordId(), 0);
+                }
             }
+
         }
         return data;
     }

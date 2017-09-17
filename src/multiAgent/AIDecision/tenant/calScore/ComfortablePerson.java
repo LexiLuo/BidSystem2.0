@@ -20,7 +20,7 @@ public class ComfortablePerson implements CalPoints {
      bid bid;
     public double calPrice(int max, int min, int average, int targetPrice) {   //max 5 points
 
-        double score = 0.5;
+        double score = 2.5;
         if(targetPrice < average){
             double rate = (targetPrice-min)*100/(average -min);
             score = 5 - rate*2.5/100.0;

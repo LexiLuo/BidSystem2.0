@@ -6,6 +6,7 @@ import jade.content.lang.sl.SLCodec;
 import jade.content.onto.Ontology;
 import jade.core.Agent;
 import multiAgent.AIDecision.landlord_context;
+import multiAgent.agentHelper.FileUtil;
 import multiAgent.behavior.listener.landlordListener;
 import multiAgent.ontology.BidOntology;
 import multiAgent.agentHelper.DFUtil;
@@ -41,12 +42,15 @@ public class landlordAgent extends Agent{
             context = new landlord_context(owner);
             CountDownLatch count = (CountDownLatch)args[1];
             System.out.println("创建landlordAgent "+ owner.getLandlordname());
+            FileUtil.append("创建房东Agent "+owner.getLandlordname());
+
             orderToNegotiate = new HashMap<String, Order>();
             count.countDown();
         }
     }
     public void takeDown(){
         System.out.println("landlordAgent "+owner.getLandlordname()+"  被销毁");
+        FileUtil.append("房东Agent"+owner.getLandlordname()+"已经被销毁");
         setEnabledO2ACommunication(false,0);
     }
 

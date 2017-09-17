@@ -39,8 +39,8 @@ public class mainTest {
                  "Business",
                  "Standard",
                  1,
-                 100,
-                 600,
+                 50,
+                 150,
                  facility,
                  dStart,
                  dEnd);

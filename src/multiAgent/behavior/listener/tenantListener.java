@@ -1,5 +1,6 @@
 package multiAgent.behavior.listener;
 
+import DO.bid;
 import DO.landlord;
 import DO.tenant;
 import VO.BidInfo;
@@ -20,6 +21,7 @@ import jade.lang.acl.MessageTemplate;
 import jade.util.leap.ArrayList;
 import multiAgent.AIDecision.tenantData;
 import multiAgent.agent.tenantAgent;
+import multiAgent.agentHelper.FileUtil;
 import multiAgent.agentHelper.ValueCal;
 import multiAgent.behavior.message.negotiation;
 import multiAgent.ontology.*;
@@ -63,6 +65,7 @@ public class tenantListener extends CyclicBehaviour {
             if (msg.getPerformative() == ACLMessage.INFORM) {
                 //得到返回的房东竞标集合，下一步是与房东之间的智能讨价还价过程
                 System.out.println(myAgent.getName() + " 收到筛选结果");
+                FileUtil.append(myAgent.getName() + " 收到筛选结果");
                 try {
                     ContentElement ce = myAgent.getContentManager().extractContent(msg);
                     Action act = (Action) ce;
@@ -71,6 +74,7 @@ public class tenantListener extends CyclicBehaviour {
                         //完成映射表
                         if (orderResponse == null || orderResponse.getBids() == null) {
                             System.out.println("没有符合意向的房源");
+                            FileUtil.append("没有符合意向的房源");
                         } else {
 
                             allbids = orderResponse.getBids();      //保存全部的Bid信息
@@ -85,13 +89,14 @@ public class tenantListener extends CyclicBehaviour {
                             List response = data.getConsults();
 
                             if (data.getGoods().size() == 1) {
-                                java.util.List<BidInfo> resultBids = this.creatBidInfo(data.getGoods());
+                                java.util.List<BidInfo> resultBids = this.creatBidInfo(data.getGoods(),data.getGoodTrains());
                                 agent.putResult(resultBids);
                                 negotiation neg = new negotiation(myAgent,allbids,order.getId(),true);
                                 myAgent.addBehaviour(neg);
                             } else if(response.size() == 0){
                                 //拒绝了所有的订单
                                 System.out.println("竞标房源都不符合条件");
+                                FileUtil.append("竞标房源都不符合条件");
                                 negotiation neg = new negotiation(myAgent,allbids,order.getId(),true);
                                 myAgent.addBehaviour(neg);
                             }else{
@@ -120,6 +125,7 @@ public class tenantListener extends CyclicBehaviour {
                         if (negotiation.getResult() == 1) {       //diminish the price        //and these bids will be calculate scores
                             System.out.println("房源" + msg.getSender().getName() + "接收降价");
                             System.out.println("降低到" + negotiation.getActualPrice());
+                            FileUtil.append("房源" + msg.getSender().getName() + "接收降价 降价到"+negotiation.getActualPrice()+"元");
                             lowerPriceNum++;
                             Bid tempbid = mapped.get(msg.getSender());
                             tempbid.setPrice(negotiation.getActualPrice());
@@ -129,12 +135,14 @@ public class tenantListener extends CyclicBehaviour {
                         } else if (negotiation.getResult() == 0) {        //don't diminish the price
                             // stop calculating the score and if it is good ,the GoodBid had one in the last process of calculate scores
                             System.out.println("房源" + msg.getSender().getName() + "拒绝降价");
+                            FileUtil.append("房源"+msg.getSender().getName()+"拒绝降价");
                             Bid tempbid = mapped.get(msg.getSender());
                             this.setConsult(tempbid, 0, false);
                             finalBids.add(tempbid);
                         } else {
                             // stop calculating the score and if it is good ,the GoodBid had one in the last process of calculate scores
                             System.out.println("房源" + msg.getSender().getName() + "未响应降价");
+                            FileUtil.append("房源" + msg.getSender().getName() + "未响应降价");
                             Bid tempbid = mapped.get(msg.getSender());
                             this.setConsult(tempbid, 0, false);
                             finalBids.add(tempbid);
@@ -142,37 +150,55 @@ public class tenantListener extends CyclicBehaviour {
                     }
                     if (currentResponse == responseNum) {
                         //收到全部的回复后 处理协商结果
-                        System.out.println("第"+status+"次协商结果处理");
-                        if (lowerPriceNum == 0) {
-                            //所有房源都不降价
-                            System.out.println("在第"+status+"次协商中 所有房源都不降价了");
-                            tenant t = agent.getOwner();
-                            Order order = agent.getOrder(t.getId());
-                            //返回现在的最好的房源
-                            tenantData data = agent.getContext().handle(allbids,order);
-                            java.util.List<BidInfo> resultBids = this.creatBidInfo(data.getGoods());
-                            agent.putResult(resultBids);
-                            negotiation neg = new negotiation(myAgent,allbids,order.getId(),true);
-                            myAgent.addBehaviour(neg);
-                        } else {
-                            System.out.println("第"+status+"次协商结果处理");
-                            tenant t = agent.getOwner();
-                            Order order = agent.getOrder(t.getId());
-                            tenantData te = agent.getContext().handle(bids,order);
-                            negotiation neg = null;
-                            if (te.getConsults().size() == 0) {
-                                java.util.List<BidInfo> resultBids = this.creatBidInfo(te.getGoods());
+                        System.out.println("第" + status + "次协商结果处理");
+                        FileUtil.append("第" + status + "次协商结果处理");
+                        tenant t = agent.getOwner();
+                        Order order = agent.getOrder(t.getId());
+                        if (status <= 2) {
+                            if (lowerPriceNum == 0 ) {
+                                //所有房源都不降价
+                                System.out.println("在第" + status + "次协商中 所有房源都不降价了 结束协商");
+                                FileUtil.append("在第" + status + "次协商中 所有房源都不降价了 结束协商");
+                                //返回现在的最好的房源
+                                tenantData data = agent.getContext().getData();
+                                java.util.List<BidInfo> resultBids = this.creatBidInfo(data.getGoods(), data.getGoodTrains());
                                 agent.putResult(resultBids);
-                                neg = new negotiation(myAgent,allbids,order.getId(),true);
+                                negotiation neg = new negotiation(myAgent, allbids, order.getId(), true);
+                                myAgent.addBehaviour(neg);
                             } else {
-                                //需要重新协商的订单
-                                responseNum = te.getConsults().size();
-                                neg = new negotiation(myAgent, te.getConsults(), order.getId(),false);
-                                bids.clear();
+                                System.out.println("第" + status + "次协商中还有房源降价 进入" + (status + 1) +"次协商流程");
+                                FileUtil.append("第" + status + "次协商中还有房源降价 进入" + (status + 1) +"次协商流程");
+                                tenantData te = agent.getContext().handle(bids, order);
+                                negotiation neg = null;
+                                if (te.getConsults().size() == 0) {
+                                    System.out.println("没有需要协商的竞标书 结束协商流程");
+                                    FileUtil.append("没有需要协商的竞标书 结束协商流程");
+                                    java.util.List<BidInfo> resultBids = this.creatBidInfo(te.getGoods(), te.getGoodTrains());
+                                    agent.putResult(resultBids);
+                                    neg = new negotiation(myAgent, allbids, order.getId(), true);
+                                } else {
+                                    //需要重新协商的订单
+                                    System.out.println("进行第2次协商");
+                                    FileUtil.append("进行第2次协商");
+                                    responseNum = te.getConsults().size();
+                                    neg = new negotiation(myAgent, te.getConsults(), order.getId(), false);
+                                    bids.clear();
+                                }
+                                myAgent.addBehaviour(neg);
+                                lowerPriceNum = 0;
+                                currentResponse = 0;
                             }
+                            status++;
+                        }else{
+                            //进入第三次协商 结束协商的流程
+                            System.out.println("进入第三次协商 结束协商流程");
+                            FileUtil.append("进入第三次协商 结束协商流程");
+                            //返回现在的最好的房源
+                            tenantData data = agent.getContext().getData();
+                            java.util.List<BidInfo> resultBids = this.creatBidInfo(data.getGoods(), data.getGoodTrains());
+                            agent.putResult(resultBids);
+                            negotiation neg = new negotiation(myAgent, allbids, order.getId(), true);
                             myAgent.addBehaviour(neg);
-                            lowerPriceNum = 0;
-                            currentResponse = 0;
                         }
                     }
 
@@ -208,10 +234,10 @@ public class tenantListener extends CyclicBehaviour {
         ((tenantAgent) myAgent).setConsult(landlordid,consults);
     }
 
-    public java.util.List<BidInfo> creatBidInfo(List GoodBid) {
+    public java.util.List<BidInfo> creatBidInfo(List goodBids ,java.util.List<bid> goodTrans) {
         java.util.List<BidInfo> resultBidInfo = new java.util.ArrayList<BidInfo>();
-        for (int i = 0; i < cal.getGoodBid().size(); i++) {
-            Bid bid = (Bid) cal.getGoodBid().get(i);
+        for (int i = 0; i < goodBids.size(); i++) {
+            Bid bid = (Bid) goodBids.get(i);
             Room r = bid.getRoom();
             landlord l =  landlordDao.findlandlordByid(r.getLandlordId());
             java.util.List<String> facilitys = new java.util.ArrayList<String>();
@@ -219,7 +245,7 @@ public class tenantListener extends CyclicBehaviour {
                 facilitys.add((String)bid.getFacilities().get(j));
             }
             BidInfo info = new BidInfo(l.getLandlordname(),l.getLandlordtype(),r.getType(),bid.getPrice()+"",r.getPrice()+"",bid.getNum(),facilitys,((tenantAgent) myAgent).getConsult(l.getLandlordid()));
-            info.setScore((Double)cal.getGoodScore().get(i));
+            info.setScore(Double.parseDouble(goodTrans.get(i).getScore())/100);
             info.setLocation(l.getDetailaddress());
             resultBidInfo.add(info);
         }

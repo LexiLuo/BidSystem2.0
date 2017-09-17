@@ -36,12 +36,12 @@ public class bidFilter extends channel {
     }
 
     public boolean totalFail(double score){
-        if(score < 750)  return false;
-        return true;
+        if(score < 750)  return true;
+        return false;
     }
     public boolean individualFail(bid b){
-        if(b.getPrice() < 200 || Double.parseDouble(b.getFacility()) < 250 || Double.parseDouble(b.getArroundsite()) < 200) return false;
-        return true;
+        if(b.getPrice() < 200 || Double.parseDouble(b.getFacility()) < 250 || Double.parseDouble(b.getArroundsite()) < 200) return true;
+        return false;
     }
 
 }

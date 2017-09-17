@@ -22,8 +22,8 @@ public class tenant_ScoreAI {
     private RandomForest forest;
 
     public tenant_ScoreAI(List<bid> bids){
-        this();
         this.bids = bids;
+        initForest();
     }
     public tenant_ScoreAI(){
         initForest();
@@ -36,7 +36,7 @@ public class tenant_ScoreAI {
         System.out.println("...");
         int num = 0;
         int errors = 0;
-        for (int i = bids.size()-5; i < bids.size(); i++) {
+        for (int i = bids.size()-15; i < bids.size(); i++) {
             bid bid = bids.get(i);
             double[] a = tenant.parseOneBid(bid);
             if(tenant.predict(bid) != bid.getResult()){
@@ -45,7 +45,7 @@ public class tenant_ScoreAI {
             num++;
         }
         System.out.println("RandomForest errors = " + errors);
-        System.out.println("精确度："+ (1-errors/num)*100);
+        System.out.println("精确度："+ (1-errors*1.0/num)*100);
         tenant.persistModel();
         System.out.println("...");
     }

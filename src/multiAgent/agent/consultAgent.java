@@ -4,6 +4,7 @@ import jade.content.lang.Codec;
 import jade.content.lang.sl.SLCodec;
 import jade.content.onto.*;
 import jade.core.Agent;
+import multiAgent.agentHelper.FileUtil;
 import multiAgent.behavior.listener.consultListener;
 import multiAgent.ontology.*;
 import multiAgent.agentHelper.DFUtil;
@@ -22,6 +23,7 @@ public class consultAgent extends Agent {
         getContentManager().registerOntology(ontology);
         DFUtil.registerService(this,"consult");
         System.out.println("创建 consultAgent");
+        FileUtil.append("创建协商Agent");
         addBehaviour(new consultListener(this));
     }
 }

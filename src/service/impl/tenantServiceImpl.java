@@ -11,6 +11,7 @@ import jade.core.AID;
 import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
 import jade.wrapper.StaleProxyException;
+import multiAgent.agentHelper.FileUtil;
 import multiAgent.ontology.Bid;
 import multiAgent.ontology.Order;
 import multiAgent.ontology.Room;
@@ -106,18 +107,6 @@ public class tenantServiceImpl implements tenantService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-//        List<BidInfo> resultBidInfo = new ArrayList<BidInfo>();
-//        for(Bid bid:bids){
-//            Room r = bid.getRoom();
-//            landlord l =  landlordDao.findlandlordByid(r.getLandlordId());
-//            List<String> facilitys = new ArrayList<String>();
-//            for(int i = 0 ; i <bid.getFacilities().size() ; i++){
-//                facilitys.add((String)bid.getFacilities().get(i));
-//            }
-//            BidInfo info = new BidInfo(l.getLandlordname(),l.getLandlordtype(),r.getType(),bid.getPrice()+"",r.getPrice()+"",bid.getNum(),facilitys);
-//            resultBidInfo.add(info);
-//        }
 
         return bids;
     }

@@ -22,7 +22,7 @@ public class bidJudge extends channel {
     }
     public tenantData handle(List bids, Order order, tenantData data) {
         ArrayList<bid> trainBids =(ArrayList<bid>) bidDao.selectAllBids();
-        if(trainBids.size() < 500){
+        if(trainBids.size() < 1000){
           data = scoreJudge.handle(bids,order,data);
         }else{
           data = forest.handle(bids,order,data);

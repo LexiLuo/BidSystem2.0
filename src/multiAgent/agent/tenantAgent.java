@@ -9,6 +9,7 @@ import jade.content.lang.sl.SLCodec;
 import jade.content.onto.Ontology;
 import jade.core.Agent;
 import multiAgent.AIDecision.tenant_context;
+import multiAgent.agentHelper.FileUtil;
 import multiAgent.agentHelper.ValueCal;
 import multiAgent.behavior.listener.tenantApiListener;
 import multiAgent.behavior.listener.tenantListener;
@@ -54,25 +55,26 @@ public class tenantAgent extends Agent {
             latch.signal();
         }
         context = new tenant_context(owner,this);
+
         System.out.println("创建 tenantAgent");
+        FileUtil.append("创建房东Agent:"+owner.getName());
         ValueCal cal = new ValueCal();
-//        cal.TrainrandomForest(this.getOwner().getId());
         addBehaviour(new tenantListener(this,cal));
         addBehaviour(new tenantApiListener(this));
         addBehaviour(new tenantBackOrderResult(null,null));
     }
 
-//    public boolean done(){
-//        //结束生命周期
-//        return isDone;
-//    }
     public tenant getOwner(){
         return owner;
     }
+
     public void setOrder(Integer id,Order order){ tenantTOorder.put(id,order);}
+
     public Order getOrder(Integer id){return tenantTOorder.get(id);}
+
     public void takeDown(){
         System.out.println("tenantAgent 被销毁");
+        FileUtil.append("房东Agent:"+owner.getName()+"已经被销毁");
         setEnabledO2ACommunication(false,0);
     }
     public void putResult(List<BidInfo> bid){
@@ -85,6 +87,7 @@ public class tenantAgent extends Agent {
     public List<Consult> getConsult(int landlordId){
         return landlordTOconsult.get(landlordId);
     }
+
     public void setConsult(int landlordId,List<Consult> consults){
         this.landlordTOconsult.put(landlordId,consults);
     }
@@ -96,5 +99,7 @@ public class tenantAgent extends Agent {
     public void setContext(tenant_context context) {
         this.context = context;
     }
+
+
 
 }

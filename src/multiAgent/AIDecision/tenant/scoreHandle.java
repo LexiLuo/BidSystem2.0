@@ -10,6 +10,7 @@ import jade.util.leap.List;
 import multiAgent.AIDecision.tenant.calScore.CalPoints;
 import multiAgent.AIDecision.tenantData;
 import multiAgent.agent.tenantAgent;
+import multiAgent.agentHelper.FileUtil;
 import multiAgent.ontology.Bid;
 import multiAgent.ontology.Order;
 import multiAgent.ontology.Room;
@@ -29,6 +30,7 @@ public class scoreHandle extends channel {
     private int init_minPrice = 0;
     private int init_avePrice = 0;
     ArrayList<bid> trainBids;
+    boolean first = true;
     public scoreHandle(CalPoints cal ,Agent agent ,tenant user){
         this.cal = cal;
         this.agent = agent;
@@ -36,8 +38,14 @@ public class scoreHandle extends channel {
     }
 
     public tenantData handle(List bids , Order order ,tenantData data) {
-        //初始化价格
-        init(bids);
+        //初始化价格区间
+        if(first) {
+            init(bids);
+            first = false;
+        }
+        //初始化训练集合
+        trainBids = new ArrayList<bid>();
+
         for(int i = 0; i < bids.size(); i++){
             Bid b =(Bid)bids.get(i);
             Room room = b.getRoom();
@@ -59,6 +67,7 @@ public class scoreHandle extends channel {
             bidFortrain.setScore(sum*100+"");
             bidFortrain.setRoomtype("1");
             System.out.println("竞标书 ID 是"+b.getLandlordId().getName() +" 并且他的分数是:"+sum);
+            FileUtil.append("竞标者为:"+b.getLandlordId().getName() +" 并且他的分数是:"+sum);
             setConsult(b,sum,data);
             trainBids.add(bidFortrain);
         }
@@ -83,8 +92,7 @@ public class scoreHandle extends channel {
         init_avePrice = sumPrice/(bids.size());
         init_maxPrice = maxPrice;
         init_minPrice = minPrice;
-        //初始化训练集合
-        trainBids = new ArrayList<bid>();
+
     }
 
     public void setAgent(Agent agent) {
